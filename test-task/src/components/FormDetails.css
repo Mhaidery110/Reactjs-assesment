@@ -1,0 +1,18 @@
+.label{
+    text-align: left;
+    padding-bottom: 20px;
+    font-size: x-large;
+}
+
+Button{
+    margin: 0px 10px 0px 10px
+}
+
+.field-label{
+    align-items: start;
+}
+
+.msg{
+    color: red;
+    font-size: medium;
+}
