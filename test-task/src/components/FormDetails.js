@@ -5,12 +5,12 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import "./FormDetails.css";
-import { useNavigate } from "react-router-dom";
+import { Navigate, redirect, useNavigate } from "react-router-dom";
 import { bloodGroup, gender, religion } from "./Contents";
 
 function FormDetails() {
   const navigate = useNavigate();
-  const [data, setData] = useState({});
+  const [msg, setMsg] = useState("");
   const [country, setCountry] = useState([]);
 
   const schema = yup.object().shape({
@@ -51,13 +51,27 @@ function FormDetails() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
-    axios.post("http://localhost:5000/post", data).then((res) => {
-      console.log(res.data);
-    });
 
-    navigate("/show");
+    const res = await axios
+      .post("http://localhost:5000/post", data)
+      .then((res) => {
+        setMsg(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    if (msg) {
+      setMsg(res.data);
+      setTimeout(() => {
+        console.log("success");
+        navigate("/show");
+      }, 2000);
+    } else {
+      setMsg("error");
+    }
   };
 
   var headers = new Headers();
@@ -354,10 +368,9 @@ function FormDetails() {
               <div className="card-footer">
                 <Form.Group as={Row} className="mb-3">
                   <Col>
-                    <Button size="lg" variant="outline-success">
+                    <Button size="lg" variant="outline-success" type="submit">
                       Submit
                     </Button>
-
                     <Button size="lg" variant="outline-danger" type="submit">
                       Cancel
                     </Button>
